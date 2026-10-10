@@ -1,0 +1,87 @@
+{
+  "info": {
+    "name": "CRUD Layanan Ekspedisi",
+    "description": "API CRUD layanan ekspedisi. Ubah baseUrl jika alamat server berbeda.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "List layanan",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/routes/api.php/layanan"
+      }
+    },
+    {
+      "name": "Detail layanan",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/routes/api.php/layanan/{{id}}"
+      }
+    },
+    {
+      "name": "Tambah layanan",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set('id', pm.response.json().data.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nama_ekspedisi\": \"Kurir Baru\",\n  \"jenis_layanan\": \"Reguler\",\n  \"zonasi\": \"Zona 1\",\n  \"tarif\": 10000,\n  \"estimasi\": \"1-2 Hari\"\n}"
+        },
+        "url": "{{baseUrl}}/routes/api.php/layanan"
+      }
+    },
+    {
+      "name": "Edit layanan",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nama_ekspedisi\": \"Kurir Diperbarui\",\n  \"jenis_layanan\": \"Express\",\n  \"zonasi\": \"Zona 2\",\n  \"tarif\": 15000,\n  \"estimasi\": \"1 Hari\"\n}"
+        },
+        "url": "{{baseUrl}}/routes/api.php/layanan/{{id}}"
+      }
+    },
+    {
+      "name": "Hapus layanan",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/routes/api.php/layanan/{{id}}"
+      }
+    }
+  ]
+}
