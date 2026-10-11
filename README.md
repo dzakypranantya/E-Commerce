@@ -49,7 +49,7 @@ Database: `e-commerce`
 | jenis_layanan | Reguler / Express / Cargo |
 | zonasi | Zona 1 sampai Zona 4 |
 | tarif | tarif pengiriman |
-| estimasi | estimasi sampai, contoh 2-3 Hari |
+| estimasi | pilihan estimasi pengiriman: 1 Hari, 2-3 Hari, 3-4 Hari, 3-5 Hari, 4-5 Hari, 5-7 Hari, atau 7-14 Hari |
 | status | ON / OFF (default ON) |
 
 ## REST API
@@ -72,7 +72,7 @@ Contoh body untuk POST dan PUT:
   "jenis_layanan": "Reguler",
   "zonasi": "Zona 1",
   "tarif": 10000,
-  "estimasi": "1-2 Hari"
+  "estimasi": "2-3 Hari"
 }
 ```
 

@@ -54,7 +54,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"nama_ekspedisi\": \"Kurir Baru\",\n  \"jenis_layanan\": \"Reguler\",\n  \"zonasi\": \"Zona 1\",\n  \"tarif\": 10000,\n  \"estimasi\": \"1-2 Hari\"\n}"
+          "raw": "{\n  \"nama_ekspedisi\": \"Kurir Baru\",\n  \"jenis_layanan\": \"Reguler\",\n  \"zonasi\": \"Zona 1\",\n  \"tarif\": 10000,\n  \"estimasi\": \"2-3 Hari\"\n}"
         },
         "url": "{{baseUrl}}/routes/api.php/layanan"
       }

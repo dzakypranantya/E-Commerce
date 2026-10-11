@@ -5,6 +5,7 @@ final class layanan_controller
 {
 	private const JENIS_OPTIONS = ['Reguler', 'Express', 'Cargo'];
 	private const ZONA_OPTIONS = ['Zona 1', 'Zona 2', 'Zona 3', 'Zona 4'];
+	private const ESTIMASI_OPTIONS = ['1 Hari', '2-3 Hari', '3-4 Hari', '3-5 Hari', '4-5 Hari', '5-7 Hari', '7-14 Hari'];
 	private const STATUS_OPTIONS = ['ON', 'OFF'];
 ///
 	public function __construct(private PDO $database)
@@ -114,6 +115,7 @@ final class layanan_controller
 		$isEdit = $action === 'edit';
 		$jenisOptions = self::JENIS_OPTIONS;
 		$zonaOptions = self::ZONA_OPTIONS;
+		$estimasiOptions = self::ESTIMASI_OPTIONS;
 		$statusOptions = self::STATUS_OPTIONS;
 		$escape = static fn (mixed $value): string => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 
@@ -174,7 +176,7 @@ final class layanan_controller
 	private function validate(array $input): array
 	{
 		$nameInput = $input['nama_ekspedisi'] ?? '';
-		$name = trim((string) $nameInput);
+		$name = mb_strtoupper(trim((string) $nameInput), 'UTF-8');
 
 		$typeInput = $input['jenis_layanan'] ?? '';
 		$type = (string) $typeInput;
@@ -195,6 +197,10 @@ final class layanan_controller
 
 		if ($name === '') {
 			throw new InvalidArgumentException($errorMessage);
+		}
+
+		if (preg_match('/[<>\/"]/', $name) === 1) {
+			throw new InvalidArgumentException('Nama ekspedisi tidak boleh mengandung karakter <, >, /, atau tanda kutip ganda.');
 		}
 
 		if (!in_array($type, self::JENIS_OPTIONS, true)) {

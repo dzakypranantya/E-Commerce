@@ -36,21 +36,21 @@
 					<?php endif; ?>
 					<div class="form-group">
 						<label for="nama_ekspedisi">Nama Ekspedisi/Kurir</label>
-						<input class="form-control" type="text" id="nama_ekspedisi" name="nama_ekspedisi" value="<?= $escape($record['nama_ekspedisi'] ?? '') ?>" placeholder="Contoh: JNE, J&T, SiLambat" required oninvalid="this.setCustomValidity('Nama ekspedisi wajib diisi.')" oninput="this.setCustomValidity('')">
+						<input class="form-control" type="text" id="nama_ekspedisi" name="nama_ekspedisi" value="<?= $escape($record['nama_ekspedisi'] ?? '') ?>" placeholder="Masukkan Nama Ekspedisi" pattern='[^<>/"]+' title='Karakter &lt;, &gt;, /, dan tanda kutip ganda tidak diperbolehkan.' required oninvalid="this.setCustomValidity(this.validity.valueMissing ? 'Nama ekspedisi wajib diisi.' : 'Karakter <, >, /, dan tanda kutip ganda tidak diperbolehkan.')" oninput="this.value = this.value.toLocaleUpperCase('id-ID'); this.setCustomValidity(this.validity.patternMismatch ? 'Karakter <, >, /, dan tanda kutip ganda tidak diperbolehkan.' : '')">
 					</div>
 					<div class="form-group">
 						<label for="jenis_layanan">Jenis Layanan</label>
 						<select class="form-select" id="jenis_layanan" name="jenis_layanan" required oninvalid="this.setCustomValidity('Silakan pilih jenis layanan pengiriman.')" onchange="this.setCustomValidity('')">
-							<option value="">-- Pilih Jenis Layanan --</option>
+							<option value="" disabled hidden <?= empty($record['jenis_layanan']) ? 'selected' : '' ?>>Pilih Jenis Layanan</option>
 							<?php foreach ($jenisOptions as $option): ?>
-								<option value="<?= $escape($option) ?>" <?= ($record['jenis_layanan'] ?? '') === $option ? 'selected' : '' ?>><?= $escape($option === 'Express' ? 'Express / Same Day' : ($option === 'Cargo' ? 'Cargo / Hemat' : $option)) ?></option>
+								<option value="<?= $escape($option) ?>" <?= ($record['jenis_layanan'] ?? '') === $option ? 'selected' : '' ?>><?= $escape($option === 'Express' ? 'Express' : ($option === 'Cargo' ? 'Cargo' : $option)) ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>
 					<div class="form-group">
 						<label for="zonasi">Zonasi Pengiriman</label>
 						<select class="form-select" id="zonasi" name="zonasi" required oninvalid="this.setCustomValidity('Silakan pilih zona tujuan pengiriman.')" onchange="this.setCustomValidity('')">
-							<option value="">-- Pilih Zonasi --</option>
+							<option value="" disabled hidden <?= empty($record['zonasi']) ? 'selected' : '' ?>>Pilih Zonasi</option>
 							<?php foreach ($zonaOptions as $option): ?>
 								<?php $zonaLabel = ['Zona 1' => 'Jabodetabek / Dalam Kota', 'Zona 2' => 'Antar Kota / Pulau Jawa', 'Zona 3' => 'Luar Pulau Jawa', 'Zona 4' => 'Pelosok / Daerah Terpencil'][$option]; ?>
 								<option value="<?= $escape($option) ?>" <?= ($record['zonasi'] ?? '') === $option ? 'selected' : '' ?>><?= $escape($option . ' (' . $zonaLabel . ')') ?></option>
@@ -59,11 +59,19 @@
 					</div>
 					<div class="form-group">
 						<label for="tarif">Tarif Dasar (Rp)</label>
-						<input class="form-control" type="number" id="tarif" name="tarif" min="0" step="1" value="<?= $escape($record['tarif'] ?? '') ?>" placeholder="Contoh: 10000" required oninvalid="this.setCustomValidity('Masukkan tarif dasar layanan.')" oninput="this.setCustomValidity('')">
+						<input class="form-control" type="number" id="tarif" name="tarif" min="0" step="1" value="<?= $escape($record['tarif'] ?? '') ?>" placeholder="Masukkan Tarif Dasar" required oninvalid="this.setCustomValidity('Masukkan tarif dasar layanan.')" oninput="this.setCustomValidity('')">
 					</div>
 					<div class="form-group">
 						<label for="estimasi">Estimasi Pengiriman</label>
-						<input class="form-control" type="text" id="estimasi" name="estimasi" value="<?= $escape($record['estimasi'] ?? '') ?>" placeholder="Contoh: 1-2 Hari" required oninvalid="this.setCustomValidity('Masukkan estimasi waktu pengiriman.')" oninput="this.setCustomValidity('')">
+						<select class="form-select" id="estimasi" name="estimasi" required>
+							<option value="" disabled hidden <?= empty($record['estimasi']) ? 'selected' : '' ?>>Pilih Estimasi Pengiriman</option>
+							<?php if (!empty($record['estimasi']) && !in_array($record['estimasi'], $estimasiOptions, true)): ?>
+								<option value="<?= $escape($record['estimasi']) ?>" selected><?= $escape($record['estimasi']) ?> (nilai saat ini)</option>
+							<?php endif; ?>
+							<?php foreach ($estimasiOptions as $option): ?>
+								<option value="<?= $escape($option) ?>" <?= ($record['estimasi'] ?? '') === $option ? 'selected' : '' ?>><?= $escape($option) ?></option>
+							<?php endforeach; ?>
+						</select>
 					</div>
 					<div class="form-group">
 						<label for="status">Status Layanan</label>
@@ -78,8 +86,8 @@
 			</div>
 		<?php else: ?>
 			<div class="card-table full-width">
-				<div class="card-header-flex">
-					<h2>Daftar Zona & Ekspedisi Pengiriman</h2>
+				<div class="card-header-flzex">
+					<h2>List Zona & Ekspedisi Pengiriman</h2>
 					<form action="index.php" method="GET" class="search-form">
 						<input type="search" name="search" value="<?= $escape($search) ?>" placeholder="Cari ekspedisi / zona..." class="form-control search-input" aria-label="Cari ekspedisi atau zona">
 					</form>
