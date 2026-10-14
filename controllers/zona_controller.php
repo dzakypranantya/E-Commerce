@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 final class zona_controller
 {
+
 	private PDO $database;
 
 	private const NOTICE_MESSAGES = [
@@ -34,7 +35,6 @@ final class zona_controller
 
 		return $query->fetchAll();
 	}
-
 	public function showNotice(string $status): void
 	{
 		if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -52,11 +52,14 @@ final class zona_controller
 		$notice = (string) ($_SESSION['notice'] ?? '');
 		unset($_SESSION['notice']);
 		$isForm = false;
+
 		$search = '';
 		if (isset($_GET['search'])) {
 			$search = trim((string) $_GET['search']);
 		}
+
 		$services = $this->all($search);
+
 		$escape = function ($value) {
 			return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 		};

@@ -7,11 +7,12 @@ final class layanan_controller
 	private const ZONA_OPTIONS = ['Zona 1', 'Zona 2', 'Zona 3', 'Zona 4'];
 	private const ESTIMASI_OPTIONS = ['1 Hari', '2-3 Hari', '3-4 Hari', '3-5 Hari', '4-5 Hari', '5-7 Hari', '7-14 Hari'];
 	private const STATUS_OPTIONS = ['ON', 'OFF'];
-///
+
 	public function __construct(private PDO $database)
 	{
 	}
 
+	// Mengambil detail satu layanan berdasarkan id
 	public function find(int $id): ?array
 	{
 		$query = $this->database->prepare(
@@ -23,6 +24,7 @@ final class layanan_controller
 		return $record ?: null;
 	}
 
+	// Create
 	public function create(array $input): int
 	{
 		$record = $this->validate($input);
@@ -34,6 +36,7 @@ final class layanan_controller
 		return (int) $this->database->lastInsertId();
 	}
 
+	// Update
 	public function update(int $id, array $input): bool
 	{
 		$currentRecord = $id > 0 ? $this->find($id) : null;
@@ -50,6 +53,7 @@ final class layanan_controller
 		return true;
 	}
 
+	// Delete
 	public function delete(int $id): bool
 	{
 		$query = $this->database->prepare('DELETE FROM layanan WHERE id = ?');
