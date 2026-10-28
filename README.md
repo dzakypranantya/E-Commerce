@@ -1,70 +1,65 @@
-# Tugas CRUD - E-Commerce
+# Aplikasi Layanan Ekspedisi
 
-Website CRUD data layanan ekspedisi pengiriman menggunakan PHP dan MySQL, tugas individu minggu 2.
-Ini bagian Individu C (Modul Ekspedisi Kirim) dari Studi Kasus 06: E-Commerce / Toko Online, yang mencakup master kurir/ekspedisi, jenis layanan (Reguler/Express/Cargo), dan zonasi.
+Aplikasi CRUD sederhana menggunakan Laravel 12, PHP 8.2+, dan MySQL. Pengguna dapat melihat, mencari, menambah, mengedit, dan menghapus layanan ekspedisi. Data yang sama juga tersedia melalui REST API.
 
-Dibuat dengan PHP (PDO), MySQL, dan XAMPP.
+## Menjalankan aplikasi
 
-## Yang bisa dilakukan
+1. Pastikan PHP 8.2+ dan Composer tersedia.
+2. Dari folder proyek, pasang dependensi:
 
-- Lihat daftar layanan ekspedisi dan zonasinya (index.php)
-- Tambah layanan baru
-- Edit data layanan
-- Hapus data layanan (lewat REST API)
-- Akses data lewat REST API (bisa dites pakai Postman)
+   ```sh
+   composer install
+   ```
 
-## Isi file
+3. Salin `.env.example` menjadi `.env` (di PowerShell: `Copy-Item .env.example .env`). Setup awal menggunakan SQLite di `database/database.sqlite` dan tidak memerlukan MySQL. Jika `.env` sudah ada, pastikan `DB_CONNECTION=sqlite` dan `DB_DATABASE=database/database.sqlite`.
+4. Buat application key dan tabel:
 
-- `index.php` : halaman utama, memanggil routes/web.php
-- `config/database.php` : buat nyambung ke database (PDO)
-- `controllers/layanan_controller.php` : logika CRUD layanan (web dan API)
-- `controllers/zona_controller.php` : nampilin data berdasarkan zona
-- `routes/web.php` : routing halaman web
-- `routes/api.php` : routing REST API
-- `src/` : file pendukung tampilan
-- `style.css` : tampilan
-- `database.sql` : file buat bikin tabel dan data awal
-- `postman_collection.json` : koleksi buat tes API
+   ```sh
+   php artisan key:generate
+   php artisan migrate --seed
+   ```
 
-## Cara Menjalankan
+5. Jalankan server:
 
-1. Nyalakan Apache dan MySQL di XAMPP.
-2. Buka phpMyAdmin (localhost/phpmyadmin), buat database baru bernama `e-commerce`.
-3. Masuk ke tab SQL pada database itu, lalu jalankan isi file `database.sql`.
-4. Copy folder project ini ke `C:\xampp\htdocs\e-commerce`.
-5. Buka `localhost/e-commerce/index.php` di browser.
+   ```sh
+   php artisan serve
+   ```
 
-Alternatif tanpa XAMPP (kalau PHP sudah terpasang): jalankan `php -S 127.0.0.1:8000` di folder project, lalu buka `http://127.0.0.1:8000`.
+6. Buka `http://127.0.0.1:8000`.
 
-Koneksi database bisa diatur lewat environment variable `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`. Kalau tidak diatur, default-nya `127.0.0.1`, `e-commerce`, `root`, dan password kosong.
+Seeder menambahkan contoh layanan JNE dan SiCepat jika tabel masih kosong.
 
-## Tabel layanan
+### Menggunakan MySQL
 
-Database: `e-commerce`
+Nyalakan MySQL melalui XAMPP atau layanan lain dan buat database bernama `e-commerce`. Pada `.env`, ubah `DB_CONNECTION=sqlite` menjadi `DB_CONNECTION=mysql`, lalu isi `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`. Setelah itu jalankan `php artisan migrate --seed`.
 
-| Kolom | Keterangan |
-|-------|------------|
-| id (primary key) | auto increment |
-| nama_ekspedisi | nama kurir, contoh JNE |
-| jenis_layanan | Reguler / Express / Cargo |
-| zonasi | Zona 1 sampai Zona 4 |
-| tarif | tarif pengiriman |
-| estimasi | pilihan estimasi pengiriman: 1 Hari, 2-3 Hari, 3-4 Hari, 3-5 Hari, 4-5 Hari, 5-7 Hari, atau 7-14 Hari |
-| status | ON / OFF (default ON) |
+### Database lama
+
+Jika tabel `layanan` sudah dibuat menggunakan `database.sql`, migrasi akan mengenali tabel tersebut dan tidak membuat tabel duplikat. Model Laravel menggunakan kolom yang sama dengan tabel lama.
+
+## Struktur Laravel
+
+- `app/Models/Layanan.php`: model untuk tabel layanan.
+- `app/Http/Controllers/`: logika CRUD halaman dan API.
+- `database/migrations/`: struktur tabel.
+- `database/seeders/`: contoh data awal.
+- `resources/views/`: halaman Blade.
+- `routes/web.php`: route halaman web.
+- `routes/api.php`: route REST API.
 
 ## REST API
 
-Base URL: `http://127.0.0.1:8000/routes/api.php`
+Base URL API: `http://127.0.0.1:8000/api`
 
 | Method | Endpoint | Fungsi |
-|--------|----------|--------|
-| GET | /layanan | semua layanan |
-| GET | /layanan/{id} | detail satu layanan |
-| POST | /layanan | tambah layanan |
-| PUT | /layanan/{id} | edit layanan |
-| DELETE | /layanan/{id} | hapus layanan |
+| --- | --- | --- |
+| GET | `/layanan` | Daftar layanan |
+| GET | `/layanan/{id}` | Detail layanan |
+| POST | `/layanan` | Tambah layanan |
+| PUT/PATCH | `/layanan/{id}` | Edit layanan |
+| DELETE | `/layanan/{id}` | Hapus layanan |
 
-Contoh body untuk POST dan PUT:
+Contoh body JSON:
 
 ```json
 {
@@ -72,14 +67,9 @@ Contoh body untuk POST dan PUT:
   "jenis_layanan": "Reguler",
   "zonasi": "Zona 1",
   "tarif": 10000,
-  "estimasi": "2-3 Hari"
+  "estimasi": "2-3 Hari",
+  "status": "ON"
 }
 ```
 
-Tes pakai Postman: import `postman_collection.json`, pastikan variable `baseUrl` sesuai alamat server.
-
-## Dibuat oleh
-
-DZAKY PRANANTYA VALOROUSA
-102022530077
-Kelas: (SI 49-03)
+Nama ekspedisi otomatis disimpan dalam huruf kapital. Field `status` dapat dihilangkan saat membuat layanan API; nilai awalnya `ON`. Import `postman_collection.json` untuk mencoba endpoint.
